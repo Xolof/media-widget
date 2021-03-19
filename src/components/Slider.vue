@@ -1,13 +1,15 @@
 <template>
   <div>
-    <div v-if="images.length">
+    <div v-if="posts.length">
         <transition-group name="fade" tag="div">
           <div v-for="i in [currentIndex]" :key="i">
-            <img :src="currentImg" />
+            <img :src="currentImage" />
+            <p>{{currentCaption}}</p>
+            <a v-bind:href="currentLink">Show on Instagram</a>
           </div>
         </transition-group>
-        <a class="prev" @click="prev" href="#">&#10094; Previous</a>
-        <a class="next" @click="next" href="#">&#10095; Next</a>
+        <a class="prev" @click="prev" href="#">&#10094;</a>
+        <a class="next" @click="next" href="#">&#10095;</a>
     </div>
     <h1 v-else>Loading...</h1>
   </div>
@@ -17,12 +19,12 @@ export default {
   name: "Slider",
   data() {
     return {
-      maxImages: 12,
-      imagesAtATime: 6,
-      images: [],
+      maxPosts: 12,
+      concurrentPosts: 6,
+      totalNumPosts: null,
+      posts: [],
       currentIndex: 0,
       loading: false,
-      posts: null,
       error: null
     };
   },
@@ -33,43 +35,78 @@ export default {
 
   methods: {
     fetchData () {
-        this.error = this.posts = null;
+        this.error = null;
         this.loading = true;
         fetch("http://localhost:8000")
             .then(response => response.json())
             .then(data => {
-                this.formatData(data);
+                this.setTotalNumPosts(data["data"]);
+                this.formatData(data["data"]);
             }
         );
     },
 
+    setTotalNumPosts (data) {
+        this.totalNumPosts = data.length;
+    },
+
     formatData (data) {
-        let newImages = [];
-        for (let item of data["data"]) {
-            console.log("item.caption: " + item.caption);
-            console.log("item.permalink: " + item.permalink);
-            console.log("item.media_url: " + item.media_url);
-            console.log("item.media_type: " + item.media_type);
+        let currentPosts = [];
+
+        data.forEach((item, i) => {
+            // console.log("item.caption: " + item.caption);
+            // console.log("item.permalink: " + item.permalink);
+            // console.log("item.media_url: " + item.media_url);
+            // console.log("item.media_type: " + item.media_type);
+            console.log("index: " + i);
             console.log();
+
             if (item.media_type === "IMAGE") {
-                newImages.push(item.media_url);
+                currentPosts.push({
+                    caption: item.caption,
+                    media_url: item.media_url,
+                    permalink: item.permalink
+                });
             }
-        }
-        this.images = newImages;
+        });
+
+        this.posts = currentPosts;
     },
 
     next: function() {
-      this.currentIndex += 1;
+      if (this.currentIndex < this.totalNumPosts) {
+          this.currentIndex += 1;
+      }
+      // console.log(Math.abs(this.currentIndex) % this.posts.length);
+      // console.log([this.currentIndex]);
+      // for (let i in [this.currentIndex]) {
+      //     console.log(i);
+      // }
     },
+
     prev: function() {
-      this.currentIndex -= 1;
+      if (this.currentIndex > 0) {
+          this.currentIndex -= 1;
+      }
+      // console.log(Math.abs(this.currentIndex) % this.posts.length);
     }
   },
 
   computed: {
-    currentImg: function() {
-      return this.images[Math.abs(this.currentIndex) % this.images.length];
-    }
+    currentImage: function() {
+      let i = Math.abs(this.currentIndex) % this.posts.length;
+      return this.posts[i].media_url;
+    },
+
+    currentCaption: function() {
+        let i = Math.abs(this.currentIndex) % this.posts.length;
+        return this.posts[i].caption;
+    },
+
+    currentLink: function() {
+        let i = Math.abs(this.currentIndex) % this.posts.length;
+        return this.posts[i].permalink;
+    },
   }
 };
 </script>
@@ -93,21 +130,23 @@ export default {
 }
 
 img {
-  height:600px;
-  width:100%
+  width: 50%;
 }
 
 .prev, .next {
+  background-color: rgba(0,0,0,0.9);
   cursor: pointer;
   position: absolute;
-  top: 40%;
+  /* top: 40%; */
+  top: 0;
   width: auto;
   padding: 16px;
   color: white;
   font-weight: bold;
   font-size: 18px;
   transition: 0.7s ease;
-  border-radius: 0 4px 4px 0;
+  /* border-radius: 0 4px 4px 0; */
+  border-radius: 4px;
   text-decoration: none;
   user-select: none;
 }
@@ -121,6 +160,6 @@ img {
 }
 
 .prev:hover, .next:hover {
-  background-color: rgba(0,0,0,0.9);
+    background: #000;
 }
 </style>
