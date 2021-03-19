@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <main>
     <div v-if="postChunks.length">
         <transition-group name="fade" tag="div">
           <div v-for="i in [currentIndex]" :key="i" class="postChunk">
@@ -10,6 +10,7 @@
               >
                   <img
                       :src="post.media_url"
+                      @load="imgLoaded(post.id)"
                    />
                    <!-- Caption and permalink should be hidden
                         and visible on hover .
@@ -26,24 +27,25 @@
             href="#">&#10094;
         </a>
         <a
-            v-if="currentIndex < maxPostChunks - 1"
+            v-if="currentIndex < numChunks - 1"
             class="next"
             @click="next"
             href="#">&#10095;
         </a>
     </div>
     <h1 v-else>Loading...</h1>
-  </div>
+</main>
 </template>
 <script>
 export default {
   name: "Slider",
   data() {
     return {
-      maxPosts: 15,
+      maxPosts: 1000000,
       concurrentPosts: 6,
       totalNumPosts: null,
       postChunks: [],
+      numChunks: null,
       currentIndex: 0,
       loading: false,
       error: null
@@ -80,7 +82,7 @@ export default {
 
         // Divide into groups of this.concurrentPosts
         this.postChunks = this.chunkArray(slicedData, this.concurrentPosts);
-        console.log(this.postChunks);
+        this.numChunks = this.postChunks.length;
     },
 
     chunkArray(arr, size) {
@@ -95,20 +97,20 @@ export default {
     },
 
     next () {
-      if (this.currentIndex < this.maxPostChunks - 1) {
+      if (this.currentIndex < this.numChunks - 1) {
           this.currentIndex += 1;
-          console.log(this.currentIndex)
-          console.log(this.currentPostChunk)
       }
     },
 
     prev () {
       if (this.currentIndex > 0) {
           this.currentIndex -= 1;
-          console.log(this.currentIndex)
-          console.log(this.currentPostChunk)
       }
-    }
+    },
+
+    imgLoaded (id) {
+        console.log("Image " + id + " fully loaded");
+    },
   },
 
   computed: {
@@ -119,7 +121,6 @@ export default {
 
     maxPostChunks () {
         const maxChunks = Math.ceil(this.maxPosts / this.concurrentPosts);
-        // console.log(maxChunks);
         return maxChunks;
     },
   }
@@ -150,14 +151,14 @@ export default {
   position: absolute;
   /* top: 40%; */
   top: 0;
-  width: auto;
+  width: 4em;
+  height: 4em;
   padding: 16px;
   color: white;
   font-weight: bold;
   font-size: 18px;
   transition: 0.7s ease;
-  /* border-radius: 0 4px 4px 0; */
-  border-radius: 4px;
+  border-radius: 100%;
   text-decoration: none;
   user-select: none;
 }
@@ -175,18 +176,30 @@ export default {
 }
 
 img {
-  width: 95%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .postChunk {
     display: flex;
-    flex-flow: wrap;
-    justify-content: center;
-    margin-top: 14px;
+    flex-wrap: wrap;
+    align-content: space-between;
+    justify-content: space-around;
+    /* margin-top: 14px; */
 }
 
 .post {
-    width: 40%;
-    margin-bottom: 7px;
+    width: 50%;
+}
+
+@media (min-width: 800px) {
+    body {
+        background: #b699c6;
+    }
+
+    .post {
+        width: 16%;
+    }
 }
 </style>
