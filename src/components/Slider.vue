@@ -1,11 +1,23 @@
 <template>
   <div>
-    <div v-if="posts.length">
+    <div v-if="postChunks.length">
         <transition-group name="fade" tag="div">
           <div v-for="i in [currentIndex]" :key="i">
-            <img :src="currentImage" />
-            <p>{{currentCaption}}</p>
-            <a v-bind:href="currentLink">Show on Instagram</a>
+              <div v-for="post in currentPostChunk" :key="post.id">
+                  <img
+                      :src="post.media_url"
+                   />
+
+                   <!-- Caption and permalink should be hidden
+                        and visible on hover .
+                    -->
+                   <!-- <p>{{post.caption}}</p>
+                   <a v-bind:href="post.permalink">Show on Instagram</a> -->
+
+              </div>
+
+              <p>{{currentPostChunk.length}} posts in this chunk</p>
+              <p>typeof this post chunk: {{typeof currentPostChunk}}</p>
           </div>
         </transition-group>
         <a
@@ -15,7 +27,7 @@
             href="#">&#10094;
         </a>
         <a
-            v-if="currentIndex < maxPosts - 1"
+            v-if="currentIndex < maxPostChunks - 1"
             class="next"
             @click="next"
             href="#">&#10095;
@@ -29,10 +41,10 @@ export default {
   name: "Slider",
   data() {
     return {
-      maxPosts: 12,
+      maxPosts: 15,
       concurrentPosts: 6,
       totalNumPosts: null,
-      posts: [],
+      postChunks: [],
       currentIndex: 0,
       loading: false,
       error: null
@@ -63,31 +75,13 @@ export default {
     },
 
     formatData (data) {
-        let currentPosts = [];
+        // Slice the data to get only the number
+        // of posts equivalent to this.maxPosts.
+        let slicedData = data.slice(0, this.maxPosts)
 
-        console.log("posts to show at a time: " + this.concurrentPosts);
         // Divide into groups of this.concurrentPosts
-
-        console.log(this.chunkArray(data, this.concurrentPosts));
-
-        data.forEach((item, i) => {
-            // console.log("item.caption: " + item.caption);
-            // console.log("item.permalink: " + item.permalink);
-            // console.log("item.media_url: " + item.media_url);
-            // console.log("item.media_type: " + item.media_type);
-            console.log("index: " + i);
-            // console.log();
-
-            if (item.media_type === "IMAGE") {
-                currentPosts.push({
-                    caption: item.caption,
-                    media_url: item.media_url,
-                    permalink: item.permalink
-                });
-            }
-        });
-
-        this.posts = currentPosts;
+        this.postChunks = this.chunkArray(slicedData, this.concurrentPosts);
+        console.log(this.postChunks);
     },
 
     chunkArray(arr, size) {
@@ -102,38 +96,32 @@ export default {
     },
 
     next () {
-      if (this.currentIndex < this.maxPosts - 1) {
+      if (this.currentIndex < this.maxPostChunks - 1) {
           this.currentIndex += 1;
+          console.log(this.currentIndex)
+          console.log(this.currentPostChunk)
       }
-      // console.log(Math.abs(this.currentIndex) % this.posts.length);
-      // console.log([this.currentIndex]);
-      // for (let i in [this.currentIndex]) {
-      //     console.log(i);
-      // }
     },
 
     prev () {
       if (this.currentIndex > 0) {
           this.currentIndex -= 1;
+          console.log(this.currentIndex)
+          console.log(this.currentPostChunk)
       }
-      // console.log(Math.abs(this.currentIndex) % this.posts.length);
     }
   },
 
   computed: {
-    currentImage () {
-      let i = Math.abs(this.currentIndex) % this.posts.length;
-      return this.posts[i].media_url;
+    currentPostChunk () {
+      let i = Math.abs(this.currentIndex) % this.postChunks.length;
+      return this.postChunks[i];
     },
 
-    currentCaption () {
-        let i = Math.abs(this.currentIndex) % this.posts.length;
-        return this.posts[i].caption;
-    },
-
-    currentLink () {
-        let i = Math.abs(this.currentIndex) % this.posts.length;
-        return this.posts[i].permalink;
+    maxPostChunks () {
+        const maxChunks = Math.ceil(this.maxPosts / this.concurrentPosts);
+        // console.log(maxChunks);
+        return maxChunks;
     },
   }
 };
