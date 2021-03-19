@@ -1,12 +1,15 @@
 <template>
   <div>
-    <transition-group name="fade" tag="div">
-      <div v-for="i in [currentIndex]" :key="i">
-        <img :src="currentImg" />
-      </div>
-    </transition-group>
-    <a class="prev" @click="prev" href="#">&#10094; Previous</a>
-    <a class="next" @click="next" href="#">&#10095; Next</a>
+    <div v-if="images.length">
+        <transition-group name="fade" tag="div">
+          <div v-for="i in [currentIndex]" :key="i">
+            <img :src="currentImg" />
+          </div>
+        </transition-group>
+        <a class="prev" @click="prev" href="#">&#10094; Previous</a>
+        <a class="next" @click="next" href="#">&#10095; Next</a>
+    </div>
+    <h1 v-else>Loading...</h1>
   </div>
 </template>
 <script>
@@ -14,22 +17,47 @@ export default {
   name: "Slider",
   data() {
     return {
-      images: [
-        "https://cdn.pixabay.com/photo/2015/12/12/15/24/amsterdam-1089646_1280.jpg",
-        "https://cdn.pixabay.com/photo/2016/02/17/23/03/usa-1206240_1280.jpg",
-        "https://cdn.pixabay.com/photo/2015/05/15/14/27/eiffel-tower-768501_1280.jpg",
-        "https://cdn.pixabay.com/photo/2016/12/04/19/30/berlin-cathedral-1882397_1280.jpg"
-      ],
-      timer: null,
-      currentIndex: 0
+      maxImages: 12,
+      imagesAtATime: 6,
+      images: [],
+      currentIndex: 0,
+      loading: false,
+      posts: null,
+      error: null
     };
   },
 
   created: function() {
-      console.log("created");
+      this.fetchData();
   },
 
   methods: {
+    fetchData () {
+        this.error = this.posts = null;
+        this.loading = true;
+        fetch("http://localhost:8000")
+            .then(response => response.json())
+            .then(data => {
+                this.formatData(data);
+            }
+        );
+    },
+
+    formatData (data) {
+        let newImages = [];
+        for (let item of data["data"]) {
+            console.log("item.caption: " + item.caption);
+            console.log("item.permalink: " + item.permalink);
+            console.log("item.media_url: " + item.media_url);
+            console.log("item.media_type: " + item.media_type);
+            console.log();
+            if (item.media_type === "IMAGE") {
+                newImages.push(item.media_url);
+            }
+        }
+        this.images = newImages;
+    },
+
     next: function() {
       this.currentIndex += 1;
     },
