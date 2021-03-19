@@ -2,22 +2,21 @@
   <div>
     <div v-if="postChunks.length">
         <transition-group name="fade" tag="div">
-          <div v-for="i in [currentIndex]" :key="i">
-              <div v-for="post in currentPostChunk" :key="post.id">
+          <div v-for="i in [currentIndex]" :key="i" class="postChunk">
+              <div
+                v-for="post in currentPostChunk"
+                :key="post.id"
+                class="post"
+              >
                   <img
                       :src="post.media_url"
                    />
-
                    <!-- Caption and permalink should be hidden
                         and visible on hover .
                     -->
                    <!-- <p>{{post.caption}}</p>
                    <a v-bind:href="post.permalink">Show on Instagram</a> -->
-
               </div>
-
-              <p>{{currentPostChunk.length}} posts in this chunk</p>
-              <p>typeof this post chunk: {{typeof currentPostChunk}}</p>
           </div>
         </transition-group>
         <a
@@ -127,7 +126,7 @@ export default {
 };
 </script>
 
-<style>
+<style scope>
 .fade-enter-active,
 .fade-leave-active {
   transition: all 0.9s ease;
@@ -143,10 +142,6 @@ export default {
   visibility: hidden;
   width:100%;
   opacity: 0;
-}
-
-img {
-  width: 50%;
 }
 
 .prev, .next {
@@ -177,5 +172,21 @@ img {
 
 .prev:hover, .next:hover {
     background: #000;
+}
+
+img {
+  width: 95%;
+}
+
+.postChunk {
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    margin-top: 14px;
+}
+
+.post {
+    width: 40%;
+    margin-bottom: 7px;
 }
 </style>
