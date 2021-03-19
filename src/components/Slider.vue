@@ -8,8 +8,18 @@
             <a v-bind:href="currentLink">Show on Instagram</a>
           </div>
         </transition-group>
-        <a class="prev" @click="prev" href="#">&#10094;</a>
-        <a class="next" @click="next" href="#">&#10095;</a>
+        <a
+            v-if="currentIndex > 0"
+            class="prev"
+            @click="prev"
+            href="#">&#10094;
+        </a>
+        <a
+            v-if="currentIndex < maxPosts - 1"
+            class="next"
+            @click="next"
+            href="#">&#10095;
+        </a>
     </div>
     <h1 v-else>Loading...</h1>
   </div>
@@ -47,11 +57,18 @@ export default {
     },
 
     setTotalNumPosts (data) {
+        // Total number of posts in the account.
+        // To know when there are no older posts to fetch.
         this.totalNumPosts = data.length;
     },
 
     formatData (data) {
         let currentPosts = [];
+
+        console.log("posts to show at a time: " + this.concurrentPosts);
+        // Divide into groups of this.concurrentPosts
+
+        console.log(this.chunkArray(data, this.concurrentPosts));
 
         data.forEach((item, i) => {
             // console.log("item.caption: " + item.caption);
@@ -59,7 +76,7 @@ export default {
             // console.log("item.media_url: " + item.media_url);
             // console.log("item.media_type: " + item.media_type);
             console.log("index: " + i);
-            console.log();
+            // console.log();
 
             if (item.media_type === "IMAGE") {
                 currentPosts.push({
@@ -73,8 +90,19 @@ export default {
         this.posts = currentPosts;
     },
 
-    next: function() {
-      if (this.currentIndex < this.totalNumPosts) {
+    chunkArray(arr, size) {
+        const chunkedArr = [];
+        let i = 0;
+        while (i < arr.length) {
+            let chunk = arr.slice(i, i + size);
+            chunkedArr.push(chunk);
+            i += size;
+        }
+        return chunkedArr;
+    },
+
+    next () {
+      if (this.currentIndex < this.maxPosts - 1) {
           this.currentIndex += 1;
       }
       // console.log(Math.abs(this.currentIndex) % this.posts.length);
@@ -84,7 +112,7 @@ export default {
       // }
     },
 
-    prev: function() {
+    prev () {
       if (this.currentIndex > 0) {
           this.currentIndex -= 1;
       }
@@ -93,17 +121,17 @@ export default {
   },
 
   computed: {
-    currentImage: function() {
+    currentImage () {
       let i = Math.abs(this.currentIndex) % this.posts.length;
       return this.posts[i].media_url;
     },
 
-    currentCaption: function() {
+    currentCaption () {
         let i = Math.abs(this.currentIndex) % this.posts.length;
         return this.posts[i].caption;
     },
 
-    currentLink: function() {
+    currentLink () {
         let i = Math.abs(this.currentIndex) % this.posts.length;
         return this.posts[i].permalink;
     },
