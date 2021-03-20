@@ -192,6 +192,10 @@ export default {
 </script>
 
 <style scope>
+main {
+    background: #0c0c0c;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: all 0.9s ease;
@@ -258,7 +262,8 @@ video {
 }
 
 .post {
-    width: 50%;
+    width: 49vw;
+    height: 49vw;
     position: relative;
 }
 
@@ -299,13 +304,16 @@ video {
 
 @media (min-width: 900px) {
     .post {
-        width: 33.33%;
+        width: 33vw;
+        height: 33vw;
     }
 }
 
 @media (min-width: 1100px) {
     .post {
-        width: 16.66%;
+        width: 16.66vw;
+        height: 16.66vw;
+
     }
 }
 </style>
