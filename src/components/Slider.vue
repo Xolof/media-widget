@@ -71,7 +71,7 @@
                      </p>
                    </video>
                    <div
-                       v-if="hover === post.id"
+                       v-bind:class="{ active: hover === post.id }"
                        class="postDetailsOverlay"
                    >
                        <div class="postDetailsText">
@@ -271,6 +271,12 @@ video {
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.67);
     z-index: 100;
+    opacity: 0;
+    transition: 1s;
+}
+
+.postDetailsOverlay.active {
+    opacity: 1;
 }
 
 .postDetailsText {
