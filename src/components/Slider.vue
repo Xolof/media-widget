@@ -70,9 +70,8 @@
                          instead.
                      </p>
                    </video>
-                   <!--                        v-if="hover === post.id"
- -->
                    <div
+                       v-if="hover === post.id"
                        class="postDetailsOverlay"
                    >
                        <div class="postDetailsText">
@@ -192,10 +191,6 @@ export default {
 </script>
 
 <style scope>
-main {
-    background: #0c0c0c;
-}
-
 .fade-enter-active,
 .fade-leave-active {
   transition: all 0.9s ease;
@@ -297,8 +292,12 @@ video {
 }
 
 .postDetailsText a {
-    color: fuchsia;
+    color: #e452e2;
     text-decoration: none;
+}
+
+.postDetailsText a:hover {
+    color: #fb5cf9;
 }
 
 
