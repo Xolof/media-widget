@@ -181,12 +181,11 @@ nav span {
   display: block;
   height: 100%;
   width: 100%;
-  /* background-color: rgba(0,0,0,0.9); */
   cursor: pointer;
   line-height: 50px;
   color: white;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 24px;
   transition: 0.7s ease;
   text-decoration: none;
   user-select: none;
@@ -215,8 +214,8 @@ img {
 }
 
 @media (min-width: 800px) {
-    body {
-        background: #b699c6;
+    nav {
+        margin-bottom: 7px;
     }
 
     .post {
