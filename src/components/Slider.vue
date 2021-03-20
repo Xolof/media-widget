@@ -36,6 +36,8 @@
                 v-for="post in currentPostChunk"
                 :key="post.id"
                 class="post"
+                @mouseover="hover = post.id"
+                @mouseleave="hover = false"
               >
                   <img
                       v-if="post.media_type === 'IMAGE'"
@@ -68,11 +70,21 @@
                          instead.
                      </p>
                    </video>
-                   <!-- Caption and permalink should be hidden
-                        and visible on hover .
-                    -->
-                   <!-- <p>{{post.caption}}</p>
-                   <a v-bind:href="post.permalink">Show on Instagram</a> -->
+                   <div
+                       v-if="hover === post.id"
+                       class="postDetailsOverlay"
+                   >
+                       <div class="postDetailsText">
+                           <p>{{post.caption}}</p>
+                           <a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            v-bind:href="post.permalink"
+                            >
+                                Show on Instagram
+                            </a>
+                       </div>
+                   </div>
               </div>
           </div>
         </transition-group>
@@ -92,7 +104,8 @@ export default {
       numChunks: null,
       currentIndex: 0,
       loading: false,
-      error: null
+      error: null,
+      hover: false
     };
   },
 
@@ -194,6 +207,7 @@ nav {
     position: -webkit-sticky;
     position: sticky;
     display: flex;
+    z-index: 200;
 }
 
 nav span {
@@ -238,6 +252,26 @@ video {
 
 .post {
     width: 50%;
+    position: relative;
+}
+
+.postDetailsOverlay {
+    /* display: none; */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.67);
+    z-index: 100;
+}
+
+.postDetailsText p {
+    color: #f0f0f0;
+}
+
+.postDetailsText a {
+    color: fuchsia;
 }
 
 @media (min-width: 800px) {
