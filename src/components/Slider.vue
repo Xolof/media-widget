@@ -4,7 +4,29 @@
         v-if="postChunks.length"
         class="slider"
     >
-        <transition-group name="fade" tag="div">
+        <nav>
+            <a
+                v-if="currentIndex > 0"
+                class="prev"
+                @click="prev"
+                href="#"
+            >
+                &#10094;
+            </a>
+            <a
+                v-if="currentIndex < numChunks - 1"
+                class="next"
+                @click="next"
+                href="#"
+            >
+                &#10095;
+            </a>
+        </nav>
+        <transition-group
+            name="fade"
+            tag="div"
+            class="transitionGroup"
+        >
           <div v-for="i in [currentIndex]" :key="i" class="postChunk">
               <div
                 v-for="post in currentPostChunk"
@@ -23,22 +45,6 @@
               </div>
           </div>
         </transition-group>
-        <a
-            v-if="currentIndex > 0"
-            class="prev"
-            @click="prev"
-            href="#"
-        >
-            &#10094;
-        </a>
-        <a
-            v-if="currentIndex < numChunks - 1"
-            class="next"
-            @click="next"
-            href="#"
-        >
-            &#10095;
-        </a>
     </div>
     <h1 v-else>Loading...</h1>
 </main>
@@ -152,20 +158,20 @@ export default {
   opacity: 0;
 }
 
+nav {
+    top: 0;
+    position: -webkit-sticky;
+    position: sticky;
+}
+
 .prev,
 .next {
+  position: absolute;
   background-color: rgba(0,0,0,0.9);
   cursor: pointer;
-
-  /**
-  * TODO: Make position of buttons responsive.
-  */
-  position: absolute;
-  top: 45vh;
-  width: 10vh;
-  height: 10vh;
-
-  line-height: 10vh;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
   color: white;
   font-weight: bold;
   font-size: 18px;
@@ -183,7 +189,8 @@ export default {
   left: 0;
 }
 
-.prev:hover, .next:hover {
+.prev:hover,
+.next:hover {
     background: #000;
 }
 
