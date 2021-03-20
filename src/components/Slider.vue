@@ -1,6 +1,9 @@
 <template>
   <main>
-    <div v-if="postChunks.length">
+    <div
+        v-if="postChunks.length"
+        class="slider"
+    >
         <transition-group name="fade" tag="div">
           <div v-for="i in [currentIndex]" :key="i" class="postChunk">
               <div
@@ -24,13 +27,17 @@
             v-if="currentIndex > 0"
             class="prev"
             @click="prev"
-            href="#">&#10094;
+            href="#"
+        >
+            &#10094;
         </a>
         <a
             v-if="currentIndex < numChunks - 1"
             class="next"
             @click="next"
-            href="#">&#10095;
+            href="#"
+        >
+            &#10095;
         </a>
     </div>
     <h1 v-else>Loading...</h1>
@@ -145,15 +152,20 @@ export default {
   opacity: 0;
 }
 
-.prev, .next {
+.prev,
+.next {
   background-color: rgba(0,0,0,0.9);
   cursor: pointer;
+
+  /**
+  * TODO: Make position of buttons responsive.
+  */
   position: absolute;
-  /* top: 40%; */
-  top: 0;
-  width: 4em;
-  height: 4em;
-  padding: 16px;
+  top: 45vh;
+  width: 10vh;
+  height: 10vh;
+
+  line-height: 10vh;
   color: white;
   font-weight: bold;
   font-size: 18px;
@@ -186,7 +198,6 @@ img {
     flex-wrap: wrap;
     align-content: space-between;
     justify-content: space-around;
-    /* margin-top: 14px; */
 }
 
 .post {
