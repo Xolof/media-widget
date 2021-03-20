@@ -5,22 +5,26 @@
         class="slider"
     >
         <nav>
-            <a
-                v-if="currentIndex > 0"
-                class="prev"
-                @click="prev"
-                href="#"
-            >
-                &#10094;
-            </a>
-            <a
-                v-if="currentIndex < numChunks - 1"
-                class="next"
-                @click="next"
-                href="#"
-            >
-                &#10095;
-            </a>
+            <span>
+                <a
+                    v-if="currentIndex > 0"
+                    class="prev"
+                    @click="prev"
+                    href="#"
+                >
+                    &#10094;
+                </a>
+            </span>
+            <span>
+                <a
+                    v-if="currentIndex < numChunks - 1"
+                    class="next"
+                    @click="next"
+                    href="#"
+                >
+                    &#10095;
+                </a>
+            </span>
         </nav>
         <transition-group
             name="fade"
@@ -35,6 +39,7 @@
               >
                   <img
                       :src="post.media_url"
+                      :key="post.media_url"
                       @load="imgLoaded(post.id)"
                    />
                    <!-- Caption and permalink should be hidden
@@ -162,31 +167,29 @@ nav {
     top: 0;
     position: -webkit-sticky;
     position: sticky;
+    display: flex;
+}
+
+nav span {
+    width: 50%;
+    height: 50px;
+    background-color: rgba(0,0,0,0.9);
 }
 
 .prev,
 .next {
-  position: absolute;
-  background-color: rgba(0,0,0,0.9);
+  display: block;
+  height: 100%;
+  width: 100%;
+  /* background-color: rgba(0,0,0,0.9); */
   cursor: pointer;
-  width: 50px;
-  height: 50px;
   line-height: 50px;
   color: white;
   font-weight: bold;
   font-size: 18px;
   transition: 0.7s ease;
-  border-radius: 100%;
   text-decoration: none;
   user-select: none;
-}
-
-.next {
-  right: 0;
-}
-
-.prev {
-  left: 0;
 }
 
 .prev:hover,
