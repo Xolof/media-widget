@@ -70,12 +70,19 @@
                          instead.
                      </p>
                    </video>
+                   <!--                        v-if="hover === post.id"
+ -->
                    <div
-                       v-if="hover === post.id"
                        class="postDetailsOverlay"
                    >
                        <div class="postDetailsText">
-                           <p>{{post.caption}}</p>
+                           <p>
+                               {{
+                                   post.caption.length > 120 ?
+                                   post.caption.slice(0, 119) + "..." :
+                                   post.caption
+                               }}
+                           </p>
                            <a
                             target="_blank"
                             rel="noopener noreferrer"
@@ -213,7 +220,7 @@ nav {
 nav span {
     width: 50%;
     height: 50px;
-    background-color: rgba(0,0,0,0.9);
+    background-color: rgba(0,0,0,0.96);
 }
 
 .prev,
@@ -247,7 +254,7 @@ video {
     display: flex;
     flex-wrap: wrap;
     align-content: space-between;
-    justify-content: space-around;
+    justify-content: center;
 }
 
 .post {
@@ -266,21 +273,39 @@ video {
     z-index: 100;
 }
 
+.postDetailsText {
+    position: absolute;
+    margin: 0;
+    padding: 0.8em 0.2em 1.2em;
+    top: 44%;
+    left: 5%;
+    right: 5%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    font-size: 12px;
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
 .postDetailsText p {
     color: #f0f0f0;
+    margin-bottom: 1.4em;
 }
 
 .postDetailsText a {
     color: fuchsia;
+    text-decoration: none;
 }
 
-@media (min-width: 800px) {
-    nav {
-        margin-bottom: 7px;
-    }
 
+@media (min-width: 900px) {
     .post {
-        width: 16%;
+        width: 33.33%;
+    }
+}
+
+@media (min-width: 1100px) {
+    .post {
+        width: 16.66%;
     }
 }
 </style>
