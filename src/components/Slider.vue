@@ -36,8 +36,8 @@
                 v-for="post in currentPostChunk"
                 :key="post.id"
                 class="post"
-                @mouseover="hover = post.id"
-                @mouseleave="hover = false"
+                @mouseover="hoverPost = post.id"
+                @mouseleave="hoverPost = false"
               >
                   <img
                       v-if="post.media_type === 'IMAGE'"
@@ -71,7 +71,7 @@
                      </p>
                    </video>
                    <div
-                       v-bind:class="{ active: hover === post.id }"
+                       v-bind:class="{ active: hoverPost === post.id }"
                        class="postDetailsOverlay"
                    >
                        <div class="postDetailsText">
@@ -111,7 +111,7 @@ export default {
       currentIndex: 0,
       loading: false,
       error: null,
-      hover: false
+      hoverPost: false
     };
   },
 
@@ -272,7 +272,7 @@ video {
     background-color: rgba(0, 0, 0, 0.67);
     z-index: 100;
     opacity: 0;
-    transition: 1s;
+    transition: 0.3s;
 }
 
 .postDetailsOverlay.active {
