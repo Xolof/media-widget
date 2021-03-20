@@ -1,7 +1,6 @@
 <template>
   <main>
     <div
-        v-if="postChunks.length"
         class="slider"
     >
         <nav>
@@ -27,6 +26,7 @@
             </span>
         </nav>
         <transition-group
+            v-if="postChunks.length"
             name="fade"
             tag="div"
             class="transitionGroup"
@@ -39,63 +39,70 @@
                 @mouseover="hoverPost = post.id"
                 @mouseleave="hoverPost = false"
               >
-                  <img
-                      v-if="post.media_type === 'IMAGE'"
-                      :src="post.media_url"
-                      :key="post.media_url"
-                      :alt="post.caption"
-                      @load="imgLoaded(post.id)"
-                   />
-                   <img
-                       v-else-if="post.media_type === 'CAROUSEL_ALBUM'"
-                       :src="post.media_url"
-                       :key="post.media_url"
-                       :alt="post.caption"
-                       @load="imgLoaded(post.id)"
-                    />
-                   <video
-                      v-if="post.media_type === 'VIDEO'"
-                      :src="post.media_url"
-                      :key="post.media_url"
-                      type="video/mp4"
-                      :title="post.caption"
-                      autoplay
-                      loop
-                      muted
-                      @canplay="imgLoaded(post.id)"
-                   >
-                     <p>
-                         Your browser doesn't support HTML5 video.
-                         Here is a <a v-bind:href="post.media_url">link to the video</a>
-                         instead.
-                     </p>
-                   </video>
-                   <div
-                       v-bind:class="{ active: hoverPost === post.id }"
-                       class="postDetailsOverlay"
-                   >
-                       <div class="postDetailsText">
-                           <p>
-                               {{
-                                   post.caption.length > 120 ?
-                                   post.caption.slice(0, 119) + "..." :
-                                   post.caption
-                               }}
-                           </p>
-                           <a
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            v-bind:href="post.permalink"
-                            >
-                                Show on Instagram
-                            </a>
+                  <div
+                      class="mediaWrapper"
+                      v-bind:class="{ visible: loadedImages.includes(post.id) }"
+                  >
+                      <img
+                          v-if="(post.media_type === 'IMAGE')"
+                          :src="post.media_url"
+                          :key="post.media_url"
+                          :alt="post.caption"
+                          @load="imgLoaded(post.id)"
+                       />
+                       <img
+                           v-else-if="post.media_type === 'CAROUSEL_ALBUM'"
+                           :src="post.media_url"
+                           :key="post.media_url"
+                           :alt="post.caption"
+                           @load="imgLoaded(post.id)"
+                        />
+                       <video
+                          v-if="post.media_type === 'VIDEO'"
+                          :src="post.media_url"
+                          :key="post.media_url"
+                          type="video/mp4"
+                          :title="post.caption"
+                          autoplay
+                          loop
+                          muted
+                          @canplay="imgLoaded(post.id)"
+                       >
+                         <p>
+                             Your browser doesn't support HTML5 video.
+                             Here is a <a v-bind:href="post.media_url">link to the video</a>
+                             instead.
+                         </p>
+                       </video>
+                       <div
+                           v-bind:class="{ active: hoverPost === post.id }"
+                           class="postDetailsOverlay"
+                       >
+                           <div class="postDetailsText">
+                               <p>
+                                   {{
+                                       post.caption.length > 120 ?
+                                       post.caption.slice(0, 119) + "..." :
+                                       post.caption
+                                   }}
+                               </p>
+                               <a
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                v-bind:href="post.permalink"
+                                >
+                                    Show on Instagram
+                                </a>
+                           </div>
                        </div>
-                   </div>
+                  </div>
               </div>
           </div>
         </transition-group>
+        <div v-else >
+            <div class="spinner"></div>
+        </div>
     </div>
-    <h1 v-else>Loading...</h1>
 </main>
 </template>
 <script>
@@ -103,15 +110,16 @@ export default {
   name: "Slider",
   data() {
     return {
-      maxPosts: 1000000,
-      concurrentPosts: 6,
+      maxPosts: 12, // Max number of posts to display in the widget.
+      concurrentPosts: 6, // Number of posts per slide.
       totalNumPosts: null,
       postChunks: [],
       numChunks: null,
       currentIndex: 0,
       loading: false,
+      loadedImages: [], // Id's of images that have been loaded.
       error: null,
-      hoverPost: false
+      hoverPost: false,
     };
   },
 
@@ -171,8 +179,8 @@ export default {
       }
     },
 
-    imgLoaded (id) {
-        console.log("Image " + id + " fully loaded");
+    imgLoaded (imageId) {
+        this.loadedImages.push(imageId);
     },
   },
 
@@ -193,7 +201,7 @@ export default {
 <style scope>
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.9s ease;
+  transition: all 0.5s ease;
   overflow: hidden;
   visibility: visible;
   position: absolute;
@@ -232,7 +240,7 @@ nav span {
   color: white;
   font-weight: bold;
   font-size: 24px;
-  transition: 0.7s ease;
+  transition: 0.5s ease;
   text-decoration: none;
   user-select: none;
 }
@@ -249,6 +257,15 @@ video {
   object-fit: cover;
 }
 
+.mediaWrapper {
+    opacity: 0;
+}
+
+.visible {
+    opacity: 1;
+    transition: 0.5s;
+}
+
 .postChunk {
     display: flex;
     flex-wrap: wrap;
@@ -263,7 +280,6 @@ video {
 }
 
 .postDetailsOverlay {
-    /* display: none; */
     position: absolute;
     top: 0;
     left: 0;
@@ -272,7 +288,7 @@ video {
     background-color: rgba(0, 0, 0, 0.67);
     z-index: 100;
     opacity: 0;
-    transition: 0.3s;
+    transition: 0.5s;
 }
 
 .postDetailsOverlay.active {
@@ -289,7 +305,7 @@ video {
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
     font-size: 12px;
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: #0d0d0d;
 }
 
 .postDetailsText p {
@@ -304,6 +320,31 @@ video {
 
 .postDetailsText a:hover {
     color: #fb5cf9;
+}
+
+.spinner {
+    height: 100px;
+    width: 100px;
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid fuchsia;
+    border-radius: 50%;
+    position: fixed;
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+      transform: rotate(0deg);
+  }
+
+  100% {
+      transform: rotate(360deg);
+  }
 }
 
 
