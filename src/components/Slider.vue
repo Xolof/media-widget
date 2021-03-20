@@ -38,10 +38,36 @@
                 class="post"
               >
                   <img
+                      v-if="post.media_type === 'IMAGE'"
                       :src="post.media_url"
                       :key="post.media_url"
+                      :alt="post.caption"
                       @load="imgLoaded(post.id)"
                    />
+                   <img
+                       v-else-if="post.media_type === 'CAROUSEL_ALBUM'"
+                       :src="post.media_url"
+                       :key="post.media_url"
+                       :alt="post.caption"
+                       @load="imgLoaded(post.id)"
+                    />
+                   <video
+                      v-if="post.media_type === 'VIDEO'"
+                      :src="post.media_url"
+                      :key="post.media_url"
+                      type="video/mp4"
+                      :title="post.caption"
+                      autoplay
+                      loop
+                      muted
+                      @canplay="imgLoaded(post.id)"
+                   >
+                     <p>
+                         Your browser doesn't support HTML5 video.
+                         Here is a <a v-bind:href="post.media_url">link to the video</a>
+                         instead.
+                     </p>
+                   </video>
                    <!-- Caption and permalink should be hidden
                         and visible on hover .
                     -->
@@ -196,7 +222,8 @@ nav span {
     background: #000;
 }
 
-img {
+img,
+video {
   width: 100%;
   height: 100%;
   object-fit: cover;
