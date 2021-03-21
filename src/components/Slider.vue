@@ -203,6 +203,10 @@ export default {
 </script>
 
 <style scope>
+main {
+    width: 100%;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: all 0.5s ease;
