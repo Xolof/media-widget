@@ -115,8 +115,8 @@
                 <div class="postDetailsText">
                   <p>
                     {{
-                      post.caption.length > 120 ?
-                        post.caption.slice(0, 119) + "..." :
+                      post.caption.length > 80 ?
+                        post.caption.slice(0, 79) + "..." :
                         post.caption
                     }}
                   </p>
@@ -222,13 +222,13 @@ export default {
 
     next () {
       if (this.currentIndex < this.numChunks - 1) {
-        this.currentIndex += 1
+        this.currentIndex ++
       }
     },
 
     prev () {
       if (this.currentIndex > 0) {
-        this.currentIndex -= 1
+        this.currentIndex --
       }
     },
 
@@ -381,7 +381,7 @@ video {
     right: 5%;
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
-    font-size: 16px;
+    font-size: 12px;
     background-color: #0d0d0d;
 }
 
@@ -456,7 +456,7 @@ video {
         height: 16vw;
     }
     .postDetailsText {
-        font-size: 15px;
+        font-size: 12px;
     }
 }
 </style>
