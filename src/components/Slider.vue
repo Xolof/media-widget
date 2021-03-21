@@ -4,7 +4,7 @@
       class="heading"
       :class="{ fullHeight: userName }"
       >
-          <h1>
+          <h2>
             <a
                 v-on:click="headerClicked('header clicked', $event)"
                 :href="'https://www.instagram.com/explore/tags/' + userName"
@@ -13,7 +13,7 @@
             >
             #{{ userName }}
             </a>
-          </h1>
+        </h2>
       </div>
     <div
       class="slider"
@@ -246,6 +246,11 @@ export default {
 </script>
 
 <style scope>
+:root {
+    --link-color: #e452e2;
+    --link-hover-color: #fb5cf9;
+}
+
 main {
     width: 100%;
 }
@@ -386,12 +391,12 @@ video {
 }
 
 .postDetailsText a {
-    color: #e452e2;
+    color: var(--link-color);
     text-decoration: none;
 }
 
 .postDetailsText a:hover {
-    color: #fb5cf9;
+    color: var(--link-hover-color);
 }
 
 .progressBar {
@@ -414,12 +419,21 @@ video {
 .heading {
     height: 0px;
     opacity: 0;
-    margin: 0.4em 0 0.8em;
+    margin: 0.4em 0 0.6em;
     transition: 0.3s;
 }
 
+.heading h2 a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+.heading h2 a:hover {
+    color: var(--link-hover-color);
+}
+
 .fullHeight {
-    height: 40px;
+    height: 25px;
     opacity: 1;
 }
 
