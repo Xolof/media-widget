@@ -1,6 +1,6 @@
 # frontend-mediawidget
 
-A slider fetching and showing images from the a media-API,
+A slider fetching and showing images from an API which is
 getting content from Instagram Basic Display API.
 
 ## Project setup

@@ -26,14 +26,13 @@
         </span>
       </nav>
       <div class="progressBar">
-          <div
-            v-for="i in postChunks.length"
-            :key="i"
-            class="progressBarSection"
-            :class="{ active: i === currentIndex + 1 }"
-            :style="progressBarSectionStyle"
-          >
-          </div>
+        <div
+          v-for="i in postChunks.length"
+          :key="i"
+          class="progressBarSection"
+          :class="{ active: i === currentIndex + 1 }"
+          :style="progressBarSectionStyle"
+        />
       </div>
       <transition-group
         v-if="postChunks.length"
@@ -115,7 +114,11 @@
       </transition-group>
       <div v-else>
         <div class="postChunk">
-            <div v-for="i in concurrentPosts" class="post postPlaceholder"></div>
+          <div
+            v-for="i in concurrentPosts"
+            :key="i"
+            class="post postPlaceholder"
+          />
         </div>
       </div>
     </div>
@@ -135,7 +138,7 @@ export default {
       loading: false,
       loadedImages: [], // Id's of images that have been loaded.
       error: null,
-      hoverPost: false,
+      hoverPost: false
     }
   },
 
@@ -148,14 +151,14 @@ export default {
     maxPostChunks () {
       const maxChunks = Math.ceil(this.maxPosts / this.concurrentPosts)
       return maxChunks
-      },
+    },
 
-      progressBarSectionStyle () {
-          return {
-              height: "100%",
-              width: 100 / this.postChunks.length + "%",
-          }
+    progressBarSectionStyle () {
+      return {
+        height: '100%',
+        width: 100 / this.postChunks.length + '%'
       }
+    }
   },
 
   created: function () {
