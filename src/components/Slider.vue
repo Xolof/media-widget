@@ -1,5 +1,19 @@
 <template>
   <main>
+      <div
+      class="heading"
+      :class="{ fullHeight: userName }"
+      >
+          <h1>
+            <a
+                :href="'https://www.instagram.com/explore/tags/' + userName"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+            #{{ userName }}
+            </a>
+          </h1>
+      </div>
     <div
       class="slider"
     >
@@ -83,7 +97,13 @@
               >
                 <p>
                   Your browser doesn't support HTML5 video.
-                  Here is a <a :href="post.media_url">link to the video</a>
+                  Here is a
+                  <a :href="post.media_url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                      link to the video
+                  </a>
                   instead.
                 </p>
               </video>
@@ -129,14 +149,14 @@ export default {
   name: 'Slider',
   data () {
     return {
-      maxPosts: 12, // Max number of posts to display in the widget.
-      concurrentPosts: 6, // Number of posts per slide.
-      totalNumPosts: null,
+      userName: null,
+      maxPosts: 12,
+      concurrentPosts: 6,
       postChunks: [],
       numChunks: null,
       currentIndex: 0,
       loading: false,
-      loadedImages: [], // Id's of images that have been loaded.
+      loadedImages: [],
       error: null,
       hoverPost: false
     }
@@ -172,16 +192,10 @@ export default {
       fetch('http://localhost:8000')
         .then(response => response.json())
         .then(data => {
-          this.setTotalNumPosts(data.data)
-          this.formatData(data.data)
-        }
-        )
-    },
-
-    setTotalNumPosts (data) {
-      // Total number of posts in the account.
-      // To know when there are no older posts to fetch.
-      this.totalNumPosts = data.length
+          const instaData = data.data
+          this.userName = instaData[0].username
+          this.formatData(instaData)
+        })
     },
 
     formatData (data) {
@@ -373,11 +387,6 @@ video {
     color: #fb5cf9;
 }
 
-.visible {
-    opacity: 1;
-    transition: 0.5s;
-}
-
 .progressBar {
     top: 50px;
     position: -webkit-sticky;
@@ -393,6 +402,23 @@ video {
 
 .progressBarSection.active {
     background: #919191;
+}
+
+.heading {
+    height: 0px;
+    opacity: 0;
+    margin: 0.4em 0 0.8em;
+    transition: 0.3s;
+}
+
+.fullHeight {
+    height: 40px;
+    opacity: 1;
+}
+
+.visible {
+    opacity: 1;
+    transition: 0.5s;
 }
 
 @media (min-width: 768px) {
