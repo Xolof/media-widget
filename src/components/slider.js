@@ -12,7 +12,7 @@ export default {
       loadedImages: [],
       error: null,
       hoverPost: false,
-      apiURL: process.env.NODE_ENV === "development" ? "http://localhost:8000" : "https://media-api.oljo.xyz"
+      apiURL: "https://media-api.oljo.xyz"
     }
   },
 
