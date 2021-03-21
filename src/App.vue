@@ -30,5 +30,6 @@ export default {
 }
 body {
   overflow: scroll;
+  background: ##f6f6f6;
 }
 </style>

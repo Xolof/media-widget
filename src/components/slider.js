@@ -11,7 +11,8 @@ export default {
       loading: false,
       loadedImages: [],
       error: null,
-      hoverPost: false
+      hoverPost: false,
+      apiURL: process.env.NODE_ENV === "development" ? "http://localhost:8000" : "https://media-widget.oljo.xyz"
     }
   },
 
@@ -41,7 +42,7 @@ export default {
     fetchData () {
       this.error = null
       this.loading = true
-      fetch('http://localhost:8000')
+      fetch(this.apiURL)
         .then(response => response.json())
         .then(data => {
           const instaData = data.data
