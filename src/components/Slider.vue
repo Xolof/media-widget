@@ -42,7 +42,6 @@
             class="post"
             @mouseover="hoverPost = post.id"
             @mouseleave="hoverPost = false"
-            :class="{ normalBackground: loadedImages.includes(post.id) }"
           >
             <div
               class="mediaWrapper"
@@ -266,6 +265,7 @@ video {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  background: #333;
 }
 
 .mediaWrapper {
@@ -289,6 +289,7 @@ video {
     position: relative;
     margin-bottom: 8px;
     box-shadow: 3px 3px 6px #333;
+
     /* Animated background to show when loading. */
     background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
     background-size: 400% 400%;
@@ -333,7 +334,7 @@ video {
     right: 5%;
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
-    font-size: 12px;
+    font-size: 16px;
     background-color: #0d0d0d;
 }
 
@@ -356,10 +357,6 @@ video {
     transition: 0.5s;
 }
 
-.normalBackground {
-    background: #3f3f3f;
-}
-
 @media (min-width: 900px) {
     .post {
         width: 32.5vw;
@@ -368,10 +365,13 @@ video {
     }
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 1220px) {
     .post {
         width: 16vw;
         height: 16vw;
+    }
+    .postDetailsText {
+        font-size: 15px;
     }
 }
 </style>
