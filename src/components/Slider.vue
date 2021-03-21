@@ -395,7 +395,7 @@ video {
     background: #919191;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 768px) {
     .post {
         width: 32.5vw;
         height: 32.5vw;
@@ -403,7 +403,7 @@ video {
     }
 }
 
-@media (min-width: 1220px) {
+@media (min-width: 992px) {
     .post {
         width: 16vw;
         height: 16vw;
