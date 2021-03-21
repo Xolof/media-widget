@@ -42,6 +42,7 @@
             class="post"
             @mouseover="hoverPost = post.id"
             @mouseleave="hoverPost = false"
+            :class="{ normalBackground: loadedImages.includes(post.id) }"
           >
             <div
               class="mediaWrapper"
@@ -104,7 +105,9 @@
         </div>
       </transition-group>
       <div v-else>
-        <div class="spinner" />
+        <div class="postChunk">
+            <div v-for="i in concurrentPosts" class="post postPlaceholder"></div>
+        </div>
       </div>
     </div>
   </main>
@@ -286,6 +289,23 @@ video {
     position: relative;
     margin-bottom: 8px;
     box-shadow: 3px 3px 6px #333;
+    /* Animated background to show when loading. */
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradient 2s ease infinite;
+}
+
+/* Keyframes for animated background to show when loading. */
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .postDetailsOverlay {
@@ -307,7 +327,7 @@ video {
 .postDetailsText {
     position: absolute;
     margin: 0;
-    padding: 0.8em 0.2em 1.2em;
+    padding: 0.8em 0.4em 1.2em;
     top: 44%;
     left: 5%;
     right: 5%;
@@ -331,36 +351,13 @@ video {
     color: #fb5cf9;
 }
 
-.spinner {
-    height: 100px;
-    width: 100px;
-    border: 12px solid #f7f7f7;
-    border-top: 12px solid fuchsia;
-    border-right: 12px solid fuchsia;
-    border-bottom: 12px solid fuchsia;
-    border-radius: 50%;
-    position: fixed;
-    margin: auto;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    animation: spin 2s linear infinite;
-}
-
 .visible {
     opacity: 1;
     transition: 0.5s;
 }
 
-@keyframes spin {
-  0% {
-      transform: rotate(0deg);
-  }
-
-  100% {
-      transform: rotate(360deg);
-  }
+.normalBackground {
+    background: #3f3f3f;
 }
 
 @media (min-width: 900px) {
