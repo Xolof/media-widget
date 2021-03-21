@@ -1,20 +1,20 @@
 <template>
   <main>
-      <div
+    <div
       class="heading"
       :class="{ fullHeight: userName }"
-      >
-          <h2>
-            <a
-                v-on:click="headerClicked('header clicked', $event)"
-                :href="'https://www.instagram.com/explore/tags/' + userName"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-            #{{ userName }}
-            </a>
-        </h2>
-      </div>
+    >
+      <h2>
+        <a
+          :href="'https://www.instagram.com/explore/tags/' + userName"
+          target="_blank"
+          rel="noopener noreferrer"
+          @click="headerClicked('header clicked', $event)"
+        >
+          #{{ userName }}
+        </a>
+      </h2>
+    </div>
     <div
       class="slider"
     >
@@ -99,11 +99,12 @@
                 <p>
                   Your browser doesn't support HTML5 video.
                   Here is a
-                  <a :href="post.media_url"
+                  <a
+                    :href="post.media_url"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                      link to the video
+                    link to the video
                   </a>
                   instead.
                 </p>
@@ -145,318 +146,9 @@
     </div>
   </main>
 </template>
-<script>
-export default {
-  name: 'Slider',
-  data () {
-    return {
-      userName: null,
-      maxPosts: 12,
-      concurrentPosts: 6,
-      postChunks: [],
-      numChunks: null,
-      currentIndex: 0,
-      loading: false,
-      loadedImages: [],
-      error: null,
-      hoverPost: false
-    }
-  },
 
-  computed: {
-    currentPostChunk () {
-      const i = Math.abs(this.currentIndex) % this.postChunks.length
-      return this.postChunks[i]
-    },
-
-    maxPostChunks () {
-      const maxChunks = Math.ceil(this.maxPosts / this.concurrentPosts)
-      return maxChunks
-    },
-
-    progressBarSectionStyle () {
-      return {
-        height: '100%',
-        width: 100 / this.postChunks.length + '%'
-      }
-    },
-  },
-
-  created: function () {
-    this.fetchData()
-  },
-
-  methods: {
-    fetchData () {
-      this.error = null
-      this.loading = true
-      fetch('http://localhost:8000')
-        .then(response => response.json())
-        .then(data => {
-          const instaData = data.data
-          this.userName = instaData[0].username
-          this.formatData(instaData)
-        })
-    },
-
-    formatData (data) {
-      // Slice the data to get only the number
-      // of posts equivalent to this.maxPosts.
-      const slicedData = data.slice(0, this.maxPosts)
-
-      // Divide into groups of this.concurrentPosts
-      this.postChunks = this.chunkArray(slicedData, this.concurrentPosts)
-      this.numChunks = this.postChunks.length
-    },
-
-    chunkArray (arr, size) {
-      const chunkedArr = []
-      let i = 0
-      while (i < arr.length) {
-        const chunk = arr.slice(i, i + size)
-        chunkedArr.push(chunk)
-        i += size
-      }
-      return chunkedArr
-    },
-
-    next () {
-      if (this.currentIndex < this.numChunks - 1) {
-        this.currentIndex ++
-      }
-    },
-
-    prev () {
-      if (this.currentIndex > 0) {
-        this.currentIndex --
-      }
-    },
-
-    imgLoaded (imageId) {
-      this.loadedImages.push(imageId)
-    },
-
-    headerClicked (message, event) {
-        if (!this.userName) {
-          event.preventDefault()
-        }
-    }
-  }
-}
-</script>
+<script src="./slider.js"></script>
 
 <style scope>
-:root {
-    --link-color: #e452e2;
-    --link-hover-color: #fb5cf9;
-}
-
-main {
-    width: 100%;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.5s ease;
-  overflow: hidden;
-  visibility: visible;
-  position: absolute;
-  width:100%;
-  opacity: 1;
-}
-
-.fade-enter,
-.fade-leave-to {
-  visibility: hidden;
-  width:100%;
-  opacity: 0;
-}
-
-nav {
-    top: 0;
-    position: -webkit-sticky;
-    position: sticky;
-    display: flex;
-    z-index: 1000;
-}
-
-nav span {
-    width: 50%;
-    height: 50px;
-    background-color: rgba(0,0,0,0.96);
-}
-
-.prev,
-.next {
-  display: block;
-  height: 100%;
-  width: 100%;
-  cursor: pointer;
-  line-height: 50px;
-  color: white;
-  font-weight: bold;
-  font-size: 24px;
-  transition: 0.5s ease;
-  text-decoration: none;
-  user-select: none;
-}
-
-.prev:hover,
-.next:hover {
-    background: #000;
-}
-
-img,
-video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  background: #333;
-}
-
-.mediaWrapper {
-    opacity: 0;
-    z-index: 100;
-    height: 100%;
-}
-
-.postChunk {
-    display: flex;
-    flex-flow: wrap;
-    align-content: space-between;
-    justify-content: space-around;
-    width: 100%;
-    margin: 6px auto;
-    padding: 0 2px 0;
-}
-
-.post {
-    width: 47vw;
-    height: 47vw;
-    position: relative;
-    margin-bottom: 8px;
-    box-shadow: 3px 3px 6px #333;
-
-    /* Animated background to show when loading. */
-    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-    background-size: 400% 400%;
-    animation: gradient 2s ease infinite;
-}
-
-/* Keyframes for animated background to show when loading. */
-@keyframes gradient {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-.postDetailsOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.67);
-    z-index: 500;
-    opacity: 0;
-    transition: 0.5s;
-}
-
-.postDetailsOverlay.active {
-    opacity: 1;
-}
-
-.postDetailsText {
-    position: absolute;
-    margin: 0;
-    padding: 0.8em 0.4em 1.2em;
-    top: 44%;
-    left: 5%;
-    right: 5%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-    font-size: 12px;
-    background-color: #0d0d0d;
-}
-
-.postDetailsText p {
-    color: #f0f0f0;
-    margin-bottom: 1.4em;
-}
-
-.postDetailsText a {
-    color: var(--link-color);
-    text-decoration: none;
-}
-
-.postDetailsText a:hover {
-    color: var(--link-hover-color);
-}
-
-.progressBar {
-    top: 50px;
-    position: -webkit-sticky;
-    position: sticky;
-    display: flex;
-    flex-flow: row;
-    width: 100%;
-    height: 5px;
-    background: #ccc;
-    z-index: 1000;
-    background-color: rgba(0,0,0,0.96);
-}
-
-.progressBarSection.active {
-    background: #919191;
-}
-
-.heading {
-    height: 0px;
-    opacity: 0;
-    margin: 0.4em 0 0.6em;
-    transition: 0.3s;
-}
-
-.heading h2 a {
-    color: var(--link-color);
-    text-decoration: none;
-}
-
-.heading h2 a:hover {
-    color: var(--link-hover-color);
-}
-
-.fullHeight {
-    height: 25px;
-    opacity: 1;
-}
-
-.visible {
-    opacity: 1;
-    transition: 0.5s;
-}
-
-@media (min-width: 768px) {
-    .post {
-        width: 32vw;
-        height: 32vw;
-        margin-bottom: 8px;
-    }
-}
-
-@media (min-width: 992px) {
-    .post {
-        width: 16vw;
-        height: 16vw;
-    }
-    .postDetailsText {
-        font-size: 12px;
-    }
-}
+    @import "../assets/styles/slider.css"
 </style>
