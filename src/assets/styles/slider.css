@@ -132,7 +132,7 @@ video {
     right: 5%;
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
-    font-size: 12px;
+    font-size: 15px;
     background-color: #0d0d0d;
 }
 
@@ -209,6 +209,6 @@ video {
         height: 16vw;
     }
     .postDetailsText {
-        font-size: 12px;
+        font-size: 14px;
     }
 }
