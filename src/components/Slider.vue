@@ -129,7 +129,7 @@ export default {
   name: 'Slider',
   data () {
     return {
-      maxPosts: 30, // Max number of posts to display in the widget.
+      maxPosts: 12, // Max number of posts to display in the widget.
       concurrentPosts: 6, // Number of posts per slide.
       totalNumPosts: null,
       postChunks: [],
@@ -305,8 +305,8 @@ video {
 }
 
 .post {
-    width: 48vw;
-    height: 48vw;
+    width: 47vw;
+    height: 47vw;
     position: relative;
     margin-bottom: 8px;
     box-shadow: 3px 3px 6px #333;
