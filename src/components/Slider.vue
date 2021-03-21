@@ -325,8 +325,10 @@ video {
 .spinner {
     height: 100px;
     width: 100px;
-    border: 16px solid #f3f3f3;
-    border-top: 16px solid fuchsia;
+    border: 12px solid #f7f7f7;
+    border-top: 12px solid fuchsia;
+    border-right: 12px solid fuchsia;
+    border-bottom: 12px solid fuchsia;
     border-radius: 50%;
     position: fixed;
     margin: auto;
