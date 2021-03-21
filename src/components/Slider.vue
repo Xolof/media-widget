@@ -6,6 +6,7 @@
       >
           <h1>
             <a
+                v-on:click="headerClicked('header clicked', $event)"
                 :href="'https://www.instagram.com/explore/tags/' + userName"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -178,7 +179,7 @@ export default {
         height: '100%',
         width: 100 / this.postChunks.length + '%'
       }
-    }
+    },
   },
 
   created: function () {
@@ -233,6 +234,12 @@ export default {
 
     imgLoaded (imageId) {
       this.loadedImages.push(imageId)
+    },
+
+    headerClicked (message, event) {
+        if (!this.userName) {
+          event.preventDefault()
+        }
     }
   }
 }
