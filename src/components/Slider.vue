@@ -229,7 +229,7 @@ nav {
     position: -webkit-sticky;
     position: sticky;
     display: flex;
-    z-index: 200;
+    z-index: 1000;
 }
 
 nav span {
@@ -267,11 +267,7 @@ video {
 
 .mediaWrapper {
     opacity: 0;
-}
-
-.visible {
-    opacity: 1;
-    transition: 0.5s;
+    z-index: 100;
 }
 
 .postChunk {
@@ -299,7 +295,7 @@ video {
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.67);
-    z-index: 100;
+    z-index: 500;
     opacity: 0;
     transition: 0.5s;
 }
@@ -352,6 +348,11 @@ video {
     animation: spin 2s linear infinite;
 }
 
+.visible {
+    opacity: 1;
+    transition: 0.5s;
+}
+
 @keyframes spin {
   0% {
       transform: rotate(0deg);
@@ -371,10 +372,6 @@ video {
 }
 
 @media (min-width: 1100px) {
-    .postChunk {
-
-    }
-
     .post {
         width: 16vw;
         height: 16vw;
