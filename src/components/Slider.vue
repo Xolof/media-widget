@@ -25,6 +25,16 @@
           </a>
         </span>
       </nav>
+      <div class="progressBar">
+          <div
+            v-for="i in postChunks.length"
+            :key="i"
+            class="progressBarSection"
+            :class="{ active: i === currentIndex + 1 }"
+            :style="progressBarSectionStyle"
+          >
+          </div>
+      </div>
       <transition-group
         v-if="postChunks.length"
         name="fade"
@@ -116,7 +126,7 @@ export default {
   name: 'Slider',
   data () {
     return {
-      maxPosts: 12, // Max number of posts to display in the widget.
+      maxPosts: 30, // Max number of posts to display in the widget.
       concurrentPosts: 6, // Number of posts per slide.
       totalNumPosts: null,
       postChunks: [],
@@ -125,7 +135,7 @@ export default {
       loading: false,
       loadedImages: [], // Id's of images that have been loaded.
       error: null,
-      hoverPost: false
+      hoverPost: false,
     }
   },
 
@@ -138,7 +148,14 @@ export default {
     maxPostChunks () {
       const maxChunks = Math.ceil(this.maxPosts / this.concurrentPosts)
       return maxChunks
-    }
+      },
+
+      progressBarSectionStyle () {
+          return {
+              height: "100%",
+              width: 100 / this.postChunks.length + "%",
+          }
+      }
   },
 
   created: function () {
@@ -271,6 +288,7 @@ video {
 .mediaWrapper {
     opacity: 0;
     z-index: 100;
+    height: 100%;
 }
 
 .postChunk {
@@ -355,6 +373,23 @@ video {
 .visible {
     opacity: 1;
     transition: 0.5s;
+}
+
+.progressBar {
+    top: 50px;
+    position: -webkit-sticky;
+    position: sticky;
+    display: flex;
+    flex-flow: row;
+    width: 100%;
+    height: 5px;
+    background: #ccc;
+    z-index: 1000;
+    background-color: rgba(0,0,0,0.96);
+}
+
+.progressBarSection.active {
+    background: #919191;
 }
 
 @media (min-width: 900px) {
