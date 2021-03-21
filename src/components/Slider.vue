@@ -397,8 +397,8 @@ video {
 
 @media (min-width: 768px) {
     .post {
-        width: 32.5vw;
-        height: 32.5vw;
+        width: 32vw;
+        height: 32vw;
         margin-bottom: 8px;
     }
 }
