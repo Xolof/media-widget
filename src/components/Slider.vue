@@ -276,15 +276,20 @@ video {
 
 .postChunk {
     display: flex;
-    flex-wrap: wrap;
+    flex-flow: wrap;
     align-content: space-between;
-    justify-content: center;
+    justify-content: space-around;
+    width: 100%;
+    margin: 6px auto;
+    padding: 0 2px 0;
 }
 
 .post {
-    width: 49vw;
-    height: 49vw;
+    width: 48vw;
+    height: 48vw;
     position: relative;
+    margin-bottom: 8px;
+    box-shadow: 3px 3px 6px #333;
 }
 
 .postDetailsOverlay {
@@ -359,15 +364,20 @@ video {
 
 @media (min-width: 900px) {
     .post {
-        width: 33vw;
-        height: 33vw;
+        width: 32.5vw;
+        height: 32.5vw;
+        margin-bottom: 8px;
     }
 }
 
 @media (min-width: 1100px) {
+    .postChunk {
+
+    }
+
     .post {
-        width: 16.66vw;
-        height: 16.66vw;
+        width: 16vw;
+        height: 16vw;
     }
 }
 </style>
