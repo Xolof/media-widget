@@ -1,114 +1,118 @@
 <template>
   <main>
     <div
-        class="slider"
+      class="slider"
     >
-        <nav>
-            <span>
-                <a
-                    v-if="currentIndex > 0"
-                    class="prev"
-                    @click="prev"
-                    href="#"
-                >
-                    &#10094;
-                </a>
-            </span>
-            <span>
-                <a
-                    v-if="currentIndex < numChunks - 1"
-                    class="next"
-                    @click="next"
-                    href="#"
-                >
-                    &#10095;
-                </a>
-            </span>
-        </nav>
-        <transition-group
-            v-if="postChunks.length"
-            name="fade"
-            tag="div"
-            class="transitionGroup"
+      <nav>
+        <span>
+          <a
+            v-if="currentIndex > 0"
+            class="prev"
+            href="#"
+            @click="prev"
+          >
+            &#10094;
+          </a>
+        </span>
+        <span>
+          <a
+            v-if="currentIndex < numChunks - 1"
+            class="next"
+            href="#"
+            @click="next"
+          >
+            &#10095;
+          </a>
+        </span>
+      </nav>
+      <transition-group
+        v-if="postChunks.length"
+        name="fade"
+        tag="div"
+        class="transitionGroup"
+      >
+        <div
+          v-for="i in [currentIndex]"
+          :key="i"
+          class="postChunk"
         >
-          <div v-for="i in [currentIndex]" :key="i" class="postChunk">
-              <div
-                v-for="post in currentPostChunk"
-                :key="post.id"
-                class="post"
-                @mouseover="hoverPost = post.id"
-                @mouseleave="hoverPost = false"
+          <div
+            v-for="post in currentPostChunk"
+            :key="post.id"
+            class="post"
+            @mouseover="hoverPost = post.id"
+            @mouseleave="hoverPost = false"
+          >
+            <div
+              class="mediaWrapper"
+              :class="{ visible: loadedImages.includes(post.id) }"
+            >
+              <img
+                v-if="(post.media_type === 'IMAGE')"
+                :key="post.media_url"
+                :src="post.media_url"
+                :alt="post.caption"
+                @load="imgLoaded(post.id)"
               >
-                  <div
-                      class="mediaWrapper"
-                      v-bind:class="{ visible: loadedImages.includes(post.id) }"
+              <img
+                v-else-if="post.media_type === 'CAROUSEL_ALBUM'"
+                :key="post.media_url"
+                :src="post.media_url"
+                :alt="post.caption"
+                @load="imgLoaded(post.id)"
+              >
+              <video
+                v-if="post.media_type === 'VIDEO'"
+                :key="post.media_url"
+                :src="post.media_url"
+                type="video/mp4"
+                :title="post.caption"
+                autoplay
+                loop
+                muted
+                @canplay="imgLoaded(post.id)"
+              >
+                <p>
+                  Your browser doesn't support HTML5 video.
+                  Here is a <a :href="post.media_url">link to the video</a>
+                  instead.
+                </p>
+              </video>
+              <div
+                :class="{ active: hoverPost === post.id }"
+                class="postDetailsOverlay"
+              >
+                <div class="postDetailsText">
+                  <p>
+                    {{
+                      post.caption.length > 120 ?
+                        post.caption.slice(0, 119) + "..." :
+                        post.caption
+                    }}
+                  </p>
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    :href="post.permalink"
                   >
-                      <img
-                          v-if="(post.media_type === 'IMAGE')"
-                          :src="post.media_url"
-                          :key="post.media_url"
-                          :alt="post.caption"
-                          @load="imgLoaded(post.id)"
-                       />
-                       <img
-                           v-else-if="post.media_type === 'CAROUSEL_ALBUM'"
-                           :src="post.media_url"
-                           :key="post.media_url"
-                           :alt="post.caption"
-                           @load="imgLoaded(post.id)"
-                        />
-                       <video
-                          v-if="post.media_type === 'VIDEO'"
-                          :src="post.media_url"
-                          :key="post.media_url"
-                          type="video/mp4"
-                          :title="post.caption"
-                          autoplay
-                          loop
-                          muted
-                          @canplay="imgLoaded(post.id)"
-                       >
-                         <p>
-                             Your browser doesn't support HTML5 video.
-                             Here is a <a v-bind:href="post.media_url">link to the video</a>
-                             instead.
-                         </p>
-                       </video>
-                       <div
-                           v-bind:class="{ active: hoverPost === post.id }"
-                           class="postDetailsOverlay"
-                       >
-                           <div class="postDetailsText">
-                               <p>
-                                   {{
-                                       post.caption.length > 120 ?
-                                       post.caption.slice(0, 119) + "..." :
-                                       post.caption
-                                   }}
-                               </p>
-                               <a
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                v-bind:href="post.permalink"
-                                >
-                                    Show on Instagram
-                                </a>
-                           </div>
-                       </div>
-                  </div>
+                    Show on Instagram
+                  </a>
+                </div>
               </div>
+            </div>
           </div>
-        </transition-group>
-        <div v-else >
-            <div class="spinner"></div>
         </div>
+      </transition-group>
+      <div v-else>
+        <div class="spinner" />
+      </div>
     </div>
-</main>
+  </main>
 </template>
 <script>
 export default {
-  name: "Slider",
-  data() {
+  name: 'Slider',
+  data () {
     return {
       maxPosts: 12, // Max number of posts to display in the widget.
       concurrentPosts: 6, // Number of posts per slide.
@@ -119,83 +123,83 @@ export default {
       loading: false,
       loadedImages: [], // Id's of images that have been loaded.
       error: null,
-      hoverPost: false,
-    };
+      hoverPost: false
+    }
   },
 
-  created: function() {
-      this.fetchData();
+  computed: {
+    currentPostChunk () {
+      const i = Math.abs(this.currentIndex) % this.postChunks.length
+      return this.postChunks[i]
+    },
+
+    maxPostChunks () {
+      const maxChunks = Math.ceil(this.maxPosts / this.concurrentPosts)
+      return maxChunks
+    }
+  },
+
+  created: function () {
+    this.fetchData()
   },
 
   methods: {
     fetchData () {
-        this.error = null;
-        this.loading = true;
-        fetch("http://localhost:8000")
-            .then(response => response.json())
-            .then(data => {
-                this.setTotalNumPosts(data["data"]);
-                this.formatData(data["data"]);
-            }
-        );
+      this.error = null
+      this.loading = true
+      fetch('http://localhost:8000')
+        .then(response => response.json())
+        .then(data => {
+          this.setTotalNumPosts(data.data)
+          this.formatData(data.data)
+        }
+        )
     },
 
     setTotalNumPosts (data) {
-        // Total number of posts in the account.
-        // To know when there are no older posts to fetch.
-        this.totalNumPosts = data.length;
+      // Total number of posts in the account.
+      // To know when there are no older posts to fetch.
+      this.totalNumPosts = data.length
     },
 
     formatData (data) {
-        // Slice the data to get only the number
-        // of posts equivalent to this.maxPosts.
-        let slicedData = data.slice(0, this.maxPosts)
+      // Slice the data to get only the number
+      // of posts equivalent to this.maxPosts.
+      const slicedData = data.slice(0, this.maxPosts)
 
-        // Divide into groups of this.concurrentPosts
-        this.postChunks = this.chunkArray(slicedData, this.concurrentPosts);
-        this.numChunks = this.postChunks.length;
+      // Divide into groups of this.concurrentPosts
+      this.postChunks = this.chunkArray(slicedData, this.concurrentPosts)
+      this.numChunks = this.postChunks.length
     },
 
-    chunkArray(arr, size) {
-        const chunkedArr = [];
-        let i = 0;
-        while (i < arr.length) {
-            let chunk = arr.slice(i, i + size);
-            chunkedArr.push(chunk);
-            i += size;
-        }
-        return chunkedArr;
+    chunkArray (arr, size) {
+      const chunkedArr = []
+      let i = 0
+      while (i < arr.length) {
+        const chunk = arr.slice(i, i + size)
+        chunkedArr.push(chunk)
+        i += size
+      }
+      return chunkedArr
     },
 
     next () {
       if (this.currentIndex < this.numChunks - 1) {
-          this.currentIndex += 1;
+        this.currentIndex += 1
       }
     },
 
     prev () {
       if (this.currentIndex > 0) {
-          this.currentIndex -= 1;
+        this.currentIndex -= 1
       }
     },
 
     imgLoaded (imageId) {
-        this.loadedImages.push(imageId);
-    },
-  },
-
-  computed: {
-    currentPostChunk () {
-      let i = Math.abs(this.currentIndex) % this.postChunks.length;
-      return this.postChunks[i];
-    },
-
-    maxPostChunks () {
-        const maxChunks = Math.ceil(this.maxPosts / this.concurrentPosts);
-        return maxChunks;
-    },
+      this.loadedImages.push(imageId)
+    }
   }
-};
+}
 </script>
 
 <style scope>
@@ -349,7 +353,6 @@ video {
   }
 }
 
-
 @media (min-width: 900px) {
     .post {
         width: 33vw;
@@ -361,7 +364,6 @@ video {
     .post {
         width: 16.66vw;
         height: 16.66vw;
-
     }
 }
 </style>
