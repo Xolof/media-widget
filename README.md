@@ -1,5 +1,8 @@
 # frontend-mediawidget
 
+A slider fetching and showing images from the a media-API,
+getting content from Instagram Basic Display API.
+
 ## Project setup
 ```
 npm install
